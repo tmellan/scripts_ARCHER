@@ -1,0 +1,59 @@
+#!/bin/bash --login
+#PBS -N 129classMD
+# Select 5 nodes (each node has 24 cores. If we write select=2 here, we should write -n 48 in the aprun line below. maximum of 3072 cores)
+#PBS -l select=80
+#PBS -l walltime=01:00:00
+#PBS -A e89-ic_m
+
+# Move to directory that script was submitted from
+export PBS_O_WORKDIR=$(readlink -f $PBS_O_WORKDIR)
+cd $PBS_O_WORKDIR
+
+temps="760 1900 2500 3200 3805"
+
+#Job dir
+dir="/work/e89/e89/tamellan/MD/MD_low/Frenkels_classifier_training/9.700/129.4850"
+
+#Define a global counter
+d=0
+for i in $temps; do
+#Select volume 
+  mkdir $i 
+  cd $i
+#Define an in-folder counter
+  c=0
+  echo $c $d
+#Advance counters
+  let c=c+1
+  let d=d+1
+#cp INCAR and KPOINTS
+
+  cp ../KPOINTS ../POSCAR ../POTCAR .
+  sed -e 's/300/'$i'/g' ../INCAR > INCAR
+
+#Call VASP
+  aprun -n 384 /work/e89/e89/tamellan/vasp5_TI_lammps/vasp_5.3.5/vasp 2>&1 &
+
+#Debug messages  
+  echo "pwd is: " `pwd` 
+  echo "the date is: " `date`
+  echo "counnter is: " $c
+  echo "directory is: "  $i
+  echo "command is: aprun -n 48 /work/e89/e89/tamellan/vasp5_TI_lammps/vasp_5.3.5/vasp &"
+
+#Short wait between node-job instances to get everything in order
+  sleep 10
+
+#Allow 11 instances of code, each running 48 cores
+  if (( $c % 5 == 0 )); then wait; fi 
+     
+
+  cd ../
+  echo "Job Done: " $i 
+  echo "Job Done: " `pwd` 
+  echo "Job Done: " `date` 
+
+done
+wait
+echo "Total Job Done at " `date`
+

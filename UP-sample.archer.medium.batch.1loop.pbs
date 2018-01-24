@@ -1,0 +1,45 @@
+#!/bin/bash --login
+#PBS -N 4801UPlin
+# Select 5 nodes (each node has 24 cores. If we write select=2 here, we should write -n 48 in the aprun line below. maximum of 3072 cores)
+#PBS -l select=128
+#PBS -l walltime=24:00:00
+#PBS -A e89-ic_m
+
+# Move to directory that script was submitted from
+export PBS_O_WORKDIR=$(readlink -f $PBS_O_WORKDIR)
+cd $PBS_O_WORKDIR
+
+#volumes="4685_nonLin_1.02029 4730_nonLin_1.07171 4801_nonLin_1.0959"
+volumes="4850"
+
+temps="3200 3805"
+dir="/work/e89/e89/tamellan/UP_sample/UP-sample-r29_e_f_3822"
+c=0
+for v in $volumes; do
+  cd $v 
+  for t in $temps; do 
+    cd $t
+    dirall=$(echo */POSCAR_*/)
+      for d in $dirall; do
+        cd $d 
+        pwd
+        pwd > pwdd.out 
+        let c=c+1
+
+        pwd > $dir/pwdd.out.$c
+        sed -i 's/NPAR=2/NPAR=8/g' INCAR
+        aprun -n 48 /work/e89/e89/tamellan/vasp5_TI_lammps/vasp_5.3.5/vasp 2>&1 &
+
+#Note - 128 nodes. 4 nodes per VASP. 64 instances. 196 jobs. three passes.
+        sleep 10
+
+        if (( $c % 64 == 0 )); then wait; fi 
+
+        cd $dir/$v/$t/.
+      done
+    cd $dir/$v/.
+  done
+  cd $dir
+done
+wait
+echo done

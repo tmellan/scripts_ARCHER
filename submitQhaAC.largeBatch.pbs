@@ -1,0 +1,37 @@
+#!/bin/bash --login
+#PBS -N PBE_AC_1
+# Select 5 nodes (each node has 24 cores. If we write select=2 here, we should write -n 48 in the aprun line below. maximum of 3072 cores)
+#PBS -l select=48
+#PBS -l walltime=24:00:00
+#PBS -A e89-ic_m
+
+# Move to directory that script was submitted from
+export PBS_O_WORKDIR=$(readlink -f $PBS_O_WORKDIR)
+cd $PBS_O_WORKDIR
+
+dir=`pwd`
+list1="0.980 0.990 1.000  1.010 1.020 1.030"
+list2="0.980 0.990 1.000  1.010 1.020 1.030"
+
+c=0
+for i in $list1; do 
+  for j in $list2; do
+    for k in {1..4}; do 
+      let c=c+1
+      cd $dir/"phon_a"$i"_c"$j/"disp-00"$k
+      
+      cp $dir/SP_SUB_STUFF/* .
+# All 24 instances of VASP to be called simultaneously, that is 24 jobs, which is 4 displacements for 6 strains at a time. Each set of 24 will take approx 2 hrs. There are 6 sets, so ~12hrs.
+      aprun -n 48 /work/e89/e89/tamellan/vasp5_TI_lammps/vasp_5.3.5/vasp 2>&1 &
+      sleep 1 
+      echo `pwd`
+      echo `date`
+      echo $c
+      echo $dir 
+        if (( $c % 24 == 0 )); then wait; fi
+      cd $dir
+    done
+  done
+done >> largJob.out 
+wait
+echo "done at " `pwd`

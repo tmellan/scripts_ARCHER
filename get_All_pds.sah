@@ -1,0 +1,9 @@
+#!/bin/bash
+
+name=70
+max=836
+min=1
+delta=5
+vol=4850
+
+for i in $(seq $min $delta $max); do tail -n +2 PDF_POSCAR$i.txt  ; done > pdf.$name.$vol.$min_$max.txt
