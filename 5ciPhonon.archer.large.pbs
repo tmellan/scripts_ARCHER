@@ -1,0 +1,39 @@
+#!/bin/bash --login
+#PBS -N 5ci.phonon
+# Select 5 nodes (each node has 24 cores. If we write select=2 here, we should write -n 48 in the aprun line below. maximum of 3072 cores)
+#PBS -l select=113
+#PBS -l walltime=24:00:00
+#PBS -A e89-ic_m
+
+# Move to directory that script was submitted from
+export PBS_O_WORKDIR=$(readlink -f $PBS_O_WORKDIR)
+cd $PBS_O_WORKDIR
+
+#Test Set # lambdaList="lambda0.0_025756 lambda0.0_166023"
+
+dispList="qha_4.685a/disp-000 qha_4.685a/disp-001 qha_4.685a/disp-002 qha_4.685a/disp-003 qha_4.685a/disp-004 qha_4.685a/disp-005 qha_4.685a/disp-006 qha_4.685a/disp-007 qha_4.685a/disp-008 qha_4.685a/disp-009 qha_4.685a/disp-010 qha_4.685a/disp-011 qha_4.685a/disp-012 qha_4.685a/disp-013 qha_4.685a/disp-014 qha_4.685a/disp-015 qha_4.685a/disp-016 qha_4.685a/disp-017 qha_4.685a/disp-018 qha_4.685a/disp-019 qha_4.685a/disp-020 qha_4.685a/disp-021 qha_4.685a/disp-022 qha_4.685a/disp-023 qha_4.685a/disp-024 qha_4.685a/disp-025 qha_4.685a/disp-026 qha_4.685a/disp-027 qha_4.685a/disp-028 qha_4.685a/disp-029 qha_4.685a/disp-030 qha_4.685a/disp-031 qha_4.685a/disp-032 qha_4.685a/disp-033 qha_4.685a/disp-034 qha_4.685a/disp-035 qha_4.685a/disp-036 qha_4.685a/disp-037 qha_4.685a/disp-038 qha_4.685a/disp-039 qha_4.685a/disp-040 qha_4.685a/disp-041 qha_4.685a/disp-042 qha_4.685a/disp-043 qha_4.685a/disp-044 qha_4.685a/disp-045 qha_4.685a/disp-046 qha_4.685a/disp-047 qha_4.685a/disp-048 qha_4.685a/disp-049 qha_4.685a/disp-050 qha_4.685a/disp-051 qha_4.685a/disp-052 qha_4.685a/disp-053 qha_4.685a/disp-054 qha_4.685a/disp-055 qha_4.685a/disp-056 qha_4.685a/disp-057 qha_4.685a/disp-058 qha_4.685a/disp-059 qha_4.685a/disp-060 qha_4.685a/disp-061 qha_4.685a/disp-062 qha_4.685a/disp-063 qha_4.685a/disp-064 qha_4.685a/disp-065 qha_4.685a/disp-066 qha_4.685a/disp-067 qha_4.685a/disp-068 qha_4.685a/disp-069 qha_4.685a/disp-070 qha_4.685a/disp-071 qha_4.685a/disp-072 qha_4.685a/disp-073 qha_4.685a/disp-074 qha_4.685a/disp-075 qha_4.685a/disp-076 qha_4.685a/disp-077 qha_4.685a/disp-078 qha_4.685a/disp-079 qha_4.685a/disp-080 qha_4.685a/disp-081 qha_4.685a/disp-082 qha_4.685a/disp-083 qha_4.685a/disp-084 qha_4.685a/disp-085 qha_4.685a/disp-086 qha_4.685a/disp-087 qha_4.685a/disp-088 qha_4.685a/disp-089 qha_4.685a/disp-090 qha_4.685a/disp-091 qha_4.685a/disp-092 qha_4.685a/disp-093 qha_4.685a/disp-094 qha_4.685a/disp-095 qha_4.685a/disp-096 qha_4.685a/disp-097 qha_4.685a/disp-098 qha_4.685a/disp-099 qha_4.685a/disp-100 qha_4.685a/disp-101 qha_4.685a/disp-102 qha_4.685a/disp-103 qha_4.685a/disp-104 qha_4.685a/disp-105 qha_4.685a/disp-106 qha_4.685a/disp-107 qha_4.685a/disp-108 qha_4.685a/disp-109 qha_4.685a/disp-110 qha_4.685a/disp-111 qha_4.685a/disp-112 qha_4.685a/disp-113 qha_4.685a/disp-114 qha_4.685a/disp-115 qha_4.685a/disp-116 qha_4.685a/disp-117 qha_4.685a/disp-118 qha_4.685a/disp-119 qha_4.685a/disp-120 qha_4.685a/disp-121 qha_4.685a/disp-122 qha_4.685a/disp-123 qha_4.685a/disp-124 qha_4.685a/disp-125 qha_4.685a/disp-126 qha_4.685a/disp-127 qha_4.685a/disp-128 qha_4.685a/disp-129 qha_4.685a/disp-130 qha_4.685a/disp-131 qha_4.685a/disp-132 qha_4.685a/disp-133 qha_4.685a/disp-134 qha_4.685a/disp-135 qha_4.685a/disp-136 qha_4.685a/disp-137 qha_4.685a/disp-138 qha_4.685a/disp-139 qha_4.685a/disp-140 qha_4.685a/disp-141 qha_4.685a/disp-142 qha_4.685a/disp-143 qha_4.685a/disp-144 qha_4.685a/disp-145 qha_4.685a/disp-146 qha_4.685a/disp-147 qha_4.685a/disp-148 qha_4.685a/disp-149 qha_4.685a/disp-150 qha_4.685a/disp-151 qha_4.685a/disp-152 qha_4.685a/disp-153 qha_4.685a/disp-154 qha_4.685a/disp-155 qha_4.685a/disp-156 qha_4.685a/disp-157 qha_4.685a/disp-158 qha_4.685a/disp-159 qha_4.685a/disp-160 qha_4.685a/disp-161 qha_4.685a/disp-162 qha_4.685a/disp-163 qha_4.685a/disp-164 qha_4.685a/disp-165 qha_4.685a/disp-166 qha_4.685a/disp-167 qha_4.685a/disp-168 qha_4.685a/disp-169 qha_4.685a/disp-170 qha_4.685a/disp-171 qha_4.685a/disp-172 qha_4.685a/disp-173 qha_4.685a/disp-174 qha_4.685a/disp-175 qha_4.685a/disp-176 qha_4.685a/disp-177 qha_4.685a/disp-178 qha_4.685a/disp-179 qha_4.685a/disp-180 qha_4.685a/disp-181 qha_4.685a/disp-182 qha_4.685a/disp-183 qha_4.685a/disp-184 qha_4.685a/disp-185 qha_4.685a/disp-186 qha_4.685a/disp-187 qha_4.685a/disp-188 qha_4.685a/disp-189 qha_4.685a/disp-190 qha_4.685a/disp-191 qha_4.685a/disp-192 qha_4.685a/disp-193 qha_4.685a/disp-194 qha_4.685a/disp-195 qha_4.685a/disp-196 qha_4.685a/disp-197 qha_4.685a/disp-198 qha_4.685a/disp-199 qha_4.685a/disp-200 qha_4.685a/disp-201 qha_4.685a/disp-202 qha_4.685a/disp-203 qha_4.685a/disp-204 qha_4.685a/disp-205 qha_4.685a/disp-206 qha_4.685a/disp-207 qha_4.685a/disp-208 qha_4.685a/disp-209 qha_4.685a/disp-210 qha_4.685a/disp-211 qha_4.685a/disp-212 qha_4.685a/disp-213 qha_4.685a/disp-214 qha_4.685a/disp-215 qha_4.685a/disp-216 qha_4.685a/disp-217 qha_4.685a/disp-218 qha_4.685a/disp-219 qha_4.685a/disp-220 qha_4.685a/disp-221 qha_4.685a/disp-222 qha_4.685a/disp-223 qha_4.685a/disp-224"
+
+
+dir="/work/e89/e89/tamellan/MD/MD_low/Cluster_Interstitial/Good_runs/5ci_relax/QHA_5ci"
+c=0
+
+for i in $dispList; do
+  cd $i 
+  pwd
+  pwd > pwdd.out
+  let c=c+1
+  cp $dir/SUB_STUFF/* .
+  
+#  sed -i 's/EDIFF  =    1E-3/EDIFF  =    1E-2/g' INCAR 
+#  sed -i 's/POTIM  = 2/POTIM  = 1/g' INCAR 
+ 
+  aprun -n 24 /work/e89/e89/tamellan/vasp5_TI_lammps/vasp_5.3.5/vasp 2>&1 &
+   
+  sleep 10
+  
+  if (( $c % 113 == 0 )); then wait; fi 
+
+  cd $dir
+done
+wait  
+echo done
